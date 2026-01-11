@@ -32,6 +32,8 @@
 
 #define LUA_LIB
 
+#include <climits>
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -375,4 +377,3 @@ int luaopen_bit32 (lua_State *L) {
 }
 
 #undef trim
-
