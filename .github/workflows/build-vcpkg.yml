@@ -75,9 +75,11 @@ jobs:
       - name: Unshallow
         run: git fetch --prune --unshallow
 
-      - name: Get latest CMake
-        # Using 'latest' branch, the latest CMake is installed.
+      - name: Get CMake 3.27
+        # Pin to a version that keeps compatibility with older vcpkg ports.
         uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.27.9
 
       - name: Ubuntu - install opengl lua5.1 luajit
         # vcpkg has lua 5.3+

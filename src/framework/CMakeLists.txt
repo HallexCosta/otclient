@@ -192,14 +192,19 @@ message(STATUS "Build revision: ${BUILD_REVISION}")
 add_definitions(-D"BUILD_REVISION=\\\"${BUILD_REVISION}\\\"")
 
 # find boost
-set(REQUIRED_BOOST_COMPONENTS system thread filesystem)
+set(REQUIRED_BOOST_COMPONENTS thread filesystem)
+set(OPTIONAL_BOOST_COMPONENTS system)
 if(WIN32)
     set(Boost_THREADAPI win32)
     set(framework_DEFINITIONS ${framework_DEFINITIONS} -DBOOST_THREAD_USE_LIB) # fix boost thread linkage
 endif()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_LIBS ${USE_STATIC_LIBS})
-find_package(Boost 1.48.0 COMPONENTS ${REQUIRED_BOOST_COMPONENTS} REQUIRED)
+find_package(Boost 1.48.0 REQUIRED COMPONENTS ${REQUIRED_BOOST_COMPONENTS} OPTIONAL_COMPONENTS ${OPTIONAL_BOOST_COMPONENTS})
+if(NOT Boost_SYSTEM_FOUND AND NOT boost_system_FOUND AND NOT TARGET Boost::system)
+    message(STATUS "Boost.System not found; using header-only implementation")
+    set(framework_DEFINITIONS ${framework_DEFINITIONS} -DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_SYSTEM_NO_LIB)
+endif()
 
 #find lua
 if(LUAJIT)
