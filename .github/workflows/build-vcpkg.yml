@@ -22,6 +22,8 @@ on:
       - src/**
       - CMakeLists.txt
 
+  workflow_dispatch:
+
 jobs:
   job:
     name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-luajit=${{ matrix.luajit }}
