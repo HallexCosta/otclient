@@ -95,14 +95,18 @@ jobs:
           echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
           echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
 
+      - name: Resolve latest vcpkg commit
+        # Keep vcpkg fresh so Windows msys2 URLs are valid
+        shell: bash
+        run: echo "VCPKG_COMMIT_ID=$(git ls-remote https://github.com/microsoft/vcpkg.git HEAD | cut -f1)" >> $GITHUB_ENV
+
       - name: Run vcpkg
         uses: lukka/run-vcpkg@v7
         with:
           vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
           vcpkgTriplet: ${{ matrix.triplet }}
-          # Use the latest vcpkg tool/ports to avoid outdated msys mirror urls on Windows
-          vcpkgGitCommitId: master
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
 
       - name: Build with CMake
         uses: lukka/run-cmake@v3
